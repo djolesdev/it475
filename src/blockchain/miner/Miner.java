@@ -3,9 +3,12 @@ package blockchain.miner;
 import blockchain.block.Block;
 import blockchain.Blockchain;
 import blockchain.transaction.Transaction;
+import blockchain.transaction.TransactionPool;
 import utill.constants.Constants;
 
+import java.sql.Array;
 import java.sql.SQLOutput;
+import java.util.ArrayList;
 import java.util.List;
 
 public class Miner {
@@ -15,38 +18,37 @@ public class Miner {
         return reward;
     }
 
-    public void mine(Block block, Blockchain blockchain) {
+    public void mine(TransactionPool pool, Blockchain blockchain) {
 
-        Transaction invalidTransaction = null;
+        List<Transaction> validTransactions = new ArrayList<>();
 
-        // Provera validnosti transakcija
-        // U slucaju da je transakcija invalid, izbacuje se iz Mining Pool-a
-        // Promeniti da metoda mine() prima TransactionPool umesto Block-a
-        // Block treba biti kreiran nako sto se validiraju transakcije
-
-        for (Transaction temp : block.getTransactions()) {
-            if (isTransactionValid(temp)) continue;
-            invalidTransaction = temp;
-            block.getTransactions().remove(temp);
+        for (Transaction temp : pool.getListaTransakcija()) {
+            if (isTransactionValid(temp)) {
+                validTransactions.add(temp);
+                continue;
+            }
+            pool.getListaTransakcija().remove(temp);
         }
 
-        // Pokrenuti majnera u zasebnom threadu koji ce konstantno osluskivati
-        // TransactionPool i validirati transakcije, u momentu kad budu validiranih 5 transakcija
-        // Blok treba biti kreiran, zatim Miner treba da trazi GoldenHash, u momentu kad ga nadje da upise u blockchain
+        Block lastBlock = blockchain.getBlockChain().get(blockchain.getSize() -1);
+        Block block = new Block(lastBlock.getId() + 1, validTransactions, lastBlock.getHash());
 
         while(!isGoldenHash(block)) {
             block.incrementNonce();
             block.generateHash();
         // TEST
-            System.out.println("PKUSAJ: " + block.getHash());
+//            System.out.println("PKUSAJ: " + block.getHash());
         }
 
         System.out.println("Miner je izmajnovao block sa hasom: " + block.getHash());
         blockchain.addBlock(block);
         reward += Constants.REWARD;
+
+        pool.setListaTransakcija(new ArrayList<Transaction>());
     }
 
     private boolean isTransactionValid(Transaction transaction) {
+        // Proveriti da li je Nepokretnost vec upisana u blockchain!
         if (transaction.getNepokretnost() == null || transaction.getKorisnik() == null) return false;
         return true;
     }

@@ -10,6 +10,14 @@ public class TransactionPool {
         this.listaTransakcija = new ArrayList<>();
     }
 
+    public List<Transaction> getListaTransakcija() {
+        return listaTransakcija;
+    }
+
+    public void setListaTransakcija(List<Transaction> listaTransakcija) {
+        this.listaTransakcija = listaTransakcija;
+    }
+
     public int getPoolSize() {
         return this.listaTransakcija.size();
     }

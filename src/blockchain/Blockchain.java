@@ -8,13 +8,12 @@ import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
-
 public class Blockchain {
     private List<Block> blockChain;
 
     public Blockchain() {
         this.blockChain = new LinkedList<>();
-//        this.blockChain.add(new Block(0, new ArrayList<Transaction>(), Constants.GENESIS_HASH));
+        this.blockChain.add(new Block(0, new ArrayList<Transaction>(), Constants.GENESIS_HASH));
     }
 
     public void addBlock(Block block) {
@@ -27,7 +26,6 @@ public class Blockchain {
 
     public int getSize() {
         return this.blockChain.size();
-
     }
 
     @Override

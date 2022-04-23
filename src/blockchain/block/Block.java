@@ -39,6 +39,14 @@ public class Block {
         this.transactions = transactions;
     }
 
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
+
     public String getHash() {
         return hash;
     }

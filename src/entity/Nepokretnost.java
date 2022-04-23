@@ -1,6 +1,7 @@
 package entity;
 
 public class Nepokretnost {
+
     private int brojOpstine;
     private double povrsina;
     private Tip tip;
